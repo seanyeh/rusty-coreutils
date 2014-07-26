@@ -17,8 +17,8 @@ fn main() {
             println!("Unrecognized option: {}", yes);
         }
 
-    } else{
-        loop{
+    } else {
+        loop {
             println!("{}", yes);
         }
     }
