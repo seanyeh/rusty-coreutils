@@ -3,8 +3,10 @@ use getopts::{optopt,optflag,getopts,OptGroup};
 use std::os;
 
 fn print_usage(program: &String, _opts: &[OptGroup]) {
-    println!("Usage: {} [options]", program);
-    println!("-o\t\tOutput");
+    println!("Usage: {} NAME [SUFFIX]", program);
+    println!("   or: {} OPTION... NAME...", program);
+    println!("\n-a --multiple\tsupport multiple arguments and treat each as a NAME");
+    println!("-s --suffix\tremove a trailing SUFFIX; implies -a");
     println!("-h --help\tUsage");
 }
 
