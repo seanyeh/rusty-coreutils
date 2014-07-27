@@ -2,12 +2,13 @@ extern crate getopts;
 use getopts::{optopt,optflag,getopts,OptGroup};
 use std::os;
 
-fn print_usage(program: &String, _opts: &[OptGroup]) {
-    println!("Usage: {} NAME [SUFFIX]", program);
-    println!("   or: {} OPTION... NAME...", program);
-    println!("\n-a --multiple\tsupport multiple arguments and treat each as a NAME");
-    println!("-s --suffix\tremove a trailing SUFFIX; implies -a");
-    println!("-h --help\tUsage");
+fn print_usage(program: &String, opts: &[OptGroup]) {
+    let desc = format!(
+        "Usage:\t{} NAME [SUFFIX]\n\
+            or:\t{} OPTION... NAME...",
+            program, program);
+
+    println!("{}", getopts::usage(desc.as_slice(), opts));
 }
 
 fn print_error(msg: &str) {
@@ -25,7 +26,7 @@ fn get_slash_index(s: &String) -> uint {
     return 0;
 }
 
-fn print_basenames(v: &Vec<String>, suffix: &String) {
+fn print_basenames(v: &Vec<String>, suffix: &String, newline: &str) {
     let suffix_len = suffix.len();
     for word in v.iter() {
         let index = get_slash_index(word);
@@ -39,7 +40,7 @@ fn print_basenames(v: &Vec<String>, suffix: &String) {
             } else {
                 sliced
             };
-        println!("{}", result);
+        print!("{}{}", result, newline);
     }
 }
 
@@ -50,6 +51,7 @@ fn main() {
     let opts = [
         optopt("s", "suffix", "remove a trailing suffix", "SUFFIX"),
         optflag("a", "multiple", "support multiple arguments and treat each as a NAME"),
+        optflag("z", "zero", "end each output line with NUL, not newline"),
         optflag("h", "help", "print this help menu")
     ];
     let matches = match getopts(args.tail(), opts) {
@@ -60,6 +62,7 @@ fn main() {
     let help = matches.opt_present("h");
     let suffix = matches.opt_str("s");
     let multiple = matches.opt_present("a") || matches.opt_present("s");
+    let newline = if matches.opt_present("z") { "" } else { "\n" };
 
     let mut free = matches.free.clone();
     let len = free.len();
@@ -76,16 +79,14 @@ fn main() {
             None =>
                 if len < 2 || multiple {
                     String::from_str("")
-                } else if len == 2 {
+                } else {
                     // If two args, the second is the suffix
                     let s = (*free.get(1)).clone();
                     free.pop();
                     s
-                } else {
-                    return;
                 }
         };
 
-        print_basenames(&free, &suffix_str);
+        print_basenames(&free, &suffix_str, newline);
     }
 }
