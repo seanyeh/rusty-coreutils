@@ -13,7 +13,7 @@ fn print_usage(program: &String, opts: &[OptGroup]) {
 }
 
 fn print_error(msg: &str) {
-    println!("basename: {}", msg);
+    println!("seq: {}", msg);
     os::set_exit_status(1);
 }
 
