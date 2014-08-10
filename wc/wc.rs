@@ -1,5 +1,4 @@
 extern crate getopts;
-extern crate debug;
 use getopts::{optflag,getopts,OptGroup};
 use std::{io,os};
 
