@@ -9,7 +9,8 @@ all: $(PROGRAMS)
 define TEMPLATE =
 
 $(1): bin/$(1)
-bin/$(1):
+
+bin/$(1): $(1)/$(1).rs
 	$(rustc) $(1)/$(1).rs -o bin/$(1)
 
 endef
