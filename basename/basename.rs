@@ -16,21 +16,31 @@ fn print_error(msg: &str) {
     os::set_exit_status(1);
 }
 
-fn get_slash_index(s: &String) -> uint {
+fn get_slash_indexes(s: &String) -> (uint, uint) {
     let sliced = s.as_slice();
+    let len = s.len();
+
+    let mut trailing_slashes = 0;
+    let mut is_last = true;
     for (i, c) in sliced.chars().rev().enumerate() {
         if c == '/' {
-            return s.len() - i;
+            if is_last {
+                trailing_slashes += 1;
+            } else {
+                return (len - i, len - trailing_slashes);
+            }
+        } else if c != '/' {
+            is_last = false;
         }
     }
-    return 0;
+    return (0, len - trailing_slashes);
 }
 
 fn print_basenames(v: &Vec<String>, suffix: &String, newline: &str) {
     let suffix_len = suffix.len();
     for word in v.iter() {
-        let index = get_slash_index(word);
-        let sliced = word.as_slice().slice_from(index);
+        let (index1, index2) = get_slash_indexes(word);
+        let sliced = word.as_slice().slice(index1, index2);
 
         let match_index = sliced.len() - suffix_len;
         let match_str = sliced.slice_from(match_index);
