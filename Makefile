@@ -1,6 +1,6 @@
 rustc = rustc
 
-PROGRAMS = base64 basename comm seq sleep tee wc yes
+PROGRAMS = base64 basename comm dirname seq sleep tee wc yes
 
 all: $(PROGRAMS)
 
